@@ -31,7 +31,8 @@ warn_unused_ignores = true
 warn_no_return = false
 warn_unreachable = true
 no_implicit_optional = true
-warn_return_any = true
+allow_redefinition = true
+exclude_gitignore = true
 exclude = 'venv'
 
 [tool.black]
