@@ -1,12 +1,6 @@
 def get_mask_card_number(card_number: str) -> str:
     """Функция маскирующая символы номера карты"""
 
-    # if not card_number.isdigit():
-    # return "[Ошибка] Введите номер карты цифрами, без пробелов."
-
-    # if len(card_number) != 16:
-    # print("[Ошибка] Вы ввели некорректный номер карты. Должно быть 16 цифр.")
-
     masked_number = card_number[:7] + "*****" + card_number[-4:]
     separated_numbers = []
     for elem in range(0, len(masked_number), 4):
