@@ -19,11 +19,6 @@ def get_mask_card_number(card_number: str) -> str:
 def get_mask_account(account_number: str) -> str:
     """Функция маскирующая номер счёта"""
 
-    # if not account_number.isdigit():
-    # return "[Ошибка] Введите номер счёта цифрами, без пробелов."
-
-    # if len(account_number) != 20:
-    # return "[Ошибка] Вы ввели некорректный номер карты. Должно быть 20 цифр."
 
     masked_account = "**" + account_number[-4:]
     return masked_account
