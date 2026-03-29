@@ -22,7 +22,7 @@ print(mask_account_card(user_input))
 
 def get_date(date: str) -> str:
     """Функция преобразующая введенную дату в формат ДД.ММ.ГГГГ"""
-    
+
     year = date[:4]
     month = date[5:7]
     day = date[8:10]
