@@ -35,6 +35,11 @@ allow_redefinition = true
 exclude_gitignore = true
 exclude = 'venv'
 
+[[tool.mypy.overrides]]
+module = ['tests.*']
+allow_untyped_defs = true
+
+
 [tool.black]
 # Максимальная длина строки
 line-length = 119
