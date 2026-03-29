@@ -15,10 +15,3 @@ def get_mask_account(account_number: str) -> str:
 
     masked_account = "**" + account_number[-4:]
     return masked_account
-
-
-# user_card_number = input("Введите номер карты: ")
-# user_account = input("Введите номер счёта: ")
-
-# print(get_mask_card_number(user_card_number))
-# print(get_mask_account(user_account))
