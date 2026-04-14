@@ -16,10 +16,6 @@ def mask_account_card(information: str) -> str:
     return f"{card_or_account_info} {masked_number}"
 
 
-user_input = input("Введите информацию о счёте или карте: ")
-print(mask_account_card(user_input))
-
-
 def get_date(date: str) -> str:
     """Функция преобразующая введенную дату в формат ДД.ММ.ГГГГ"""
 
@@ -29,6 +25,3 @@ def get_date(date: str) -> str:
     actual_date = f"{day}.{month}.{year}"
 
     return actual_date
-
-
-print(get_date("2024-03-11T02:26:18.671407"))
