@@ -3,18 +3,18 @@ from src.masks import get_mask_account, get_mask_card_number
 
 def mask_account_card(information: str) -> str:
     """Функция маскирующая номер карты или счёта"""
-
+    if not information:
+        return "Пустая строка"
     splited_information = information.split()
     card_or_account_info = " ".join(splited_information[:-1])
     number = splited_information[-1]
 
-    if "счет" in card_or_account_info.lower():
-        masked_number = get_mask_account(number)
+    if number.isdigit() and len(number) == 20:
+        return f"{card_or_account_info} {get_mask_account(number)}"
+    elif number.isdigit() and len(number) == 16:
+        return f"{card_or_account_info} {get_mask_card_number(number)}"
     else:
-        masked_number = get_mask_card_number(number)
-
-    return f"{card_or_account_info} {masked_number}"
-
+        return "Недопустимое значение"
 
 def get_date(date: str) -> str:
     """Функция преобразующая введенную дату в формат ДД.ММ.ГГГГ"""
