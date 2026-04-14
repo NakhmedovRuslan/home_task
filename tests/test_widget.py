@@ -1,7 +1,9 @@
 import pytest
-from src.widget import mask_account_card, get_date
 
-########################################################################## Тестирование маскировки номера карты
+from src.widget import get_date, mask_account_card
+
+
+# Тестирование маскировки номера карты
 @pytest.mark.parametrize(
     "data, masked_data",
     [
@@ -10,7 +12,7 @@ from src.widget import mask_account_card, get_date
         ("Счет 12341234123412349999", "Счет **9999"),
         ("привет", "Недопустимое значение"),
         ("Счет 12341234А2341234", "Недопустимое значение"),
-        ("", "Пустая строка")
+        ("", "Пустая строка"),
     ],
 )
 def test_mask_account_card(data, masked_data):

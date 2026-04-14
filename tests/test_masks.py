@@ -1,9 +1,9 @@
 import pytest
 
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 
 
-########################################################################## Тестирование маскировки номера карты
+# Тестирование маскировки номера карты
 @pytest.mark.parametrize(
     "data_cards, masked_data_card",
     [
@@ -15,7 +15,7 @@ def test_get_mask_card_number(data_cards, masked_data_card):
     assert get_mask_card_number(data_cards) == masked_data_card
 
 
-########################################################################## Тестирование маскировки номера счета
+# Тестирование маскировки номера счета
 @pytest.mark.parametrize(
     "data_account, masked_data_account",
     [
