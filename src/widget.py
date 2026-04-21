@@ -16,6 +16,7 @@ def mask_account_card(information: str) -> str:
     else:
         return "Недопустимое значение"
 
+
 def get_date(date: str) -> str:
     """Функция преобразующая введенную дату в формат ДД.ММ.ГГГГ"""
 

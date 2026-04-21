@@ -3,7 +3,6 @@ import pytest
 from src.masks import get_mask_account, get_mask_card_number
 
 
-# Тестирование маскировки номера карты
 @pytest.mark.parametrize(
     "data_cards, masked_data_card",
     [
@@ -12,10 +11,10 @@ from src.masks import get_mask_account, get_mask_card_number
     ],
 )
 def test_get_mask_card_number(data_cards, masked_data_card):
+    """Функция для тестирования маскировки номера карты"""
     assert get_mask_card_number(data_cards) == masked_data_card
 
 
-# Тестирование маскировки номера счета
 @pytest.mark.parametrize(
     "data_account, masked_data_account",
     [
@@ -24,4 +23,5 @@ def test_get_mask_card_number(data_cards, masked_data_card):
     ],
 )
 def test_get_mask_account(data_account, masked_data_account):
+    """Функция для тестирования маскировки номера счета"""
     assert get_mask_account(data_account) == masked_data_account
