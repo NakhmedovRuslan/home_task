@@ -75,5 +75,6 @@ for elem in result_des:
 
 for card_number in card_number_generator(1, 5):
     print(card_number)
+
 print(filter_by_state(data))
 print(sort_by_date(data))
