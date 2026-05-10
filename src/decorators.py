@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 
-def log(filename: str | None = None) -> Callable[[Callable], Callable]:
+def log(filename: Path) -> Callable[[Callable], Callable]:
     def log_2_stage(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
