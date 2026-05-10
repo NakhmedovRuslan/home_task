@@ -5,6 +5,7 @@ from src.decorators import log
 
 def test_log_in_file_success(tmp_path):
     file = tmp_path / "test.txt"
+
     @log(filename=file)
     def my_function(x, y):
         """Функция складывания двух чисел"""
@@ -19,6 +20,7 @@ def test_log_in_file_success(tmp_path):
 
 def test_log_in_file_fail(tmp_path):
     file = tmp_path / "test.txt"
+
     @log(filename=file)
     def my_function(x, y):
         """Функция складывания двух чисел"""

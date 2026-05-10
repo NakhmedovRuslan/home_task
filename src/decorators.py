@@ -1,6 +1,7 @@
 from functools import wraps
-from typing import Any, Callable
 from pathlib import Path
+from typing import Any, Callable
+
 
 def log(filename: str | None = None) -> Callable[[Callable], Callable]:
     def log_2_stage(func: Callable) -> Callable:
