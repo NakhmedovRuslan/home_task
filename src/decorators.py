@@ -1,6 +1,6 @@
 from functools import wraps
 from typing import Any, Callable
-
+from pathlib import Path
 
 def log(filename: str | None = None) -> Callable[[Callable], Callable]:
     def log_2_stage(func: Callable) -> Callable:
@@ -24,7 +24,10 @@ def log(filename: str | None = None) -> Callable[[Callable], Callable]:
                 print("---------------------------------------------------\n")
 
             else:
-                with open(f"../{filename}", "a", encoding="UTF-8") as file:
+                log_path = Path(filename)
+                log_path.parent.mkdir(parents=True, exist_ok=True)
+
+                with open(log_path, "a", encoding="UTF-8") as file:
                     file.write("---------------------------------------------------\n")
                     file.write(f"function {func.__name__} with args: args - {args}, kwargs - {kwargs}\n")
                     if status == "OK":
@@ -43,10 +46,13 @@ def log(filename: str | None = None) -> Callable[[Callable], Callable]:
     return log_2_stage
 
 
-@log(filename="mylog.txt")
-def my_function(x: int | float, y: int | float) -> int | float:
-    """Функция складывает 2 числа и выдает результат"""
-    return x + y
+if __name__ == "__main__":
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    LOG_FILE = BASE_DIR / "logs" / "log.txt"
 
+    @log(filename=LOG_FILE)
+    def my_function(x: int | float, y: int | float) -> int | float:
+        """Функция складывает 2 числа и выдает результат"""
+        return x + y
 
-print(my_function(1, 2))
+    print(my_function(1, 3))
