@@ -49,7 +49,7 @@ def log(filename: Path) -> Callable[[Callable], Callable]:
 
 if __name__ == "__main__":
     BASE_DIR = Path(__file__).resolve().parent.parent
-    LOG_FILE = BASE_DIR / "logs" / "log.txt"
+    LOG_FILE = BASE_DIR / "logs" / "decorators.log"
 
     @log(filename=LOG_FILE)
     def my_function(x: int | float, y: int | float) -> int | float:

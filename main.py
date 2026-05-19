@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.processing import filter_by_state, sort_by_date
+from src.utils import operations
 from src.widget import get_date, mask_account_card
 
 data = [
@@ -78,3 +81,7 @@ for card_number in card_number_generator(1, 5):
 
 print(filter_by_state(data))
 print(sort_by_date(data))
+
+BASE_DIR = Path(__file__).resolve().parent
+OPERATIONS_FILE = BASE_DIR / "data" / "operations.json"
+print(operations(OPERATIONS_FILE))
