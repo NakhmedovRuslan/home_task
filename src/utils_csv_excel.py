@@ -7,7 +7,7 @@ def read_csv_file(filename: Path, state: str = "") -> pd.DataFrame:
     """Функция читает csv файл и возвращает строки отфильтрованные по статусу транзакции"""
     try:
         df = pd.read_csv(filename, delimiter=";")
-        state_sort = df.loc[df.state == state].to_dict(orient='records')
+        state_sort = df.loc[df.state == state].to_dict(orient="records")
         return state_sort
 
     except FileNotFoundError:
@@ -18,7 +18,7 @@ def read_excel_file(filename: Path, state: str = "") -> pd.DataFrame:
     """Функция читает excel файл и возвращает строки отфильтрованные по статусу транзакции"""
     try:
         df = pd.read_excel(filename)
-        state_sort = df.loc[df.state == state].to_dict(orient='records')
+        state_sort = df.loc[df.state == state].to_dict(orient="records")
         return state_sort
 
     except FileNotFoundError:
