@@ -47,13 +47,13 @@ def log(filename: Path) -> Callable[[Callable], Callable]:
     return log_2_stage
 
 
-if __name__ == "__main__":
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    LOG_FILE = BASE_DIR / "logs" / "decorators.log"
-
-    @log(filename=LOG_FILE)
-    def my_function(x: int | float, y: int | float) -> int | float:
-        """Функция складывает 2 числа и выдает результат"""
-        return x + y
-
-    print(my_function(1, 3))
+# if __name__ == "__main__":
+#     BASE_DIR = Path(__file__).resolve().parent.parent
+#     LOG_FILE = BASE_DIR / "logs" / "decorators.log"
+#
+#     @log(filename=LOG_FILE)
+#     def my_function(x: int | float, y: int | float) -> int | float:
+#         """Функция складывает 2 числа и выдает результат"""
+#         return x + y
+#
+#     print(my_function(1, 3))

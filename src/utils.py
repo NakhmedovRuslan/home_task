@@ -17,7 +17,9 @@ def operations(filename: Path) -> list[Path]:
         return []
 
 
-if __name__ == "__main__":
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    OPERATIONS_FILE = BASE_DIR / "data" / "operations.json"
-    # print(operations(OPERATIONS_FILE))
+# if __name__ == "__main__":
+#     BASE_DIR = Path(__file__).resolve().parent.parent
+#     OPERATIONS_FILE = BASE_DIR / "data" / "operations.json"
+#     print(operations(OPERATIONS_FILE))
+
+# print(operations(r"C:\Users\rusla\PycharmProjects\hometask9\data\operations.json"))

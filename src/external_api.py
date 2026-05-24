@@ -40,4 +40,4 @@ if __name__ == "__main__":
         "to": "Счет 35383033474447895560",
     }
 
-    print(transaction_convert(transaction))
+    # print(transaction_convert(transaction))

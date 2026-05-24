@@ -1,80 +1,237 @@
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
+from pathlib import Path
+
+from src.generators import filter_by_currency, transaction_descriptions_by_keyword
 from src.processing import filter_by_state, sort_by_date
+from src.utils import operations
+from src.utils_csv_excel import read_csv_file, read_excel_file
 from src.widget import get_date, mask_account_card
 
-data = [
-    {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
-    {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
-    {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
-    {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
-]
+BASE_DIR = Path(__file__).resolve().parent
+json_file = BASE_DIR / "data" / "operations.json"
+csv_file = BASE_DIR / "data" / "transactions.csv"
+xlsx_file = BASE_DIR / "data" / "transactions_excel.xlsx"
 
 
-transactions = [
-    {
-        "id": 939719570,
-        "state": "EXECUTED",
-        "date": "2018-06-30T02:08:58.425572",
-        "operationAmount": {"amount": "9824.07", "currency": {"name": "USD", "code": "USD"}},
-        "description": "Перевод организации",
-        "from": "Счет 75106830613657916952",
-        "to": "Счет 11776614605963066702",
-    },
-    {
-        "id": 142264268,
-        "state": "EXECUTED",
-        "date": "2019-04-04T23:20:05.206878",
-        "operationAmount": {"amount": "79114.93", "currency": {"name": "USD", "code": "USD"}},
-        "description": "Перевод со счета на счет",
-        "from": "Счет 19708645243227258542",
-        "to": "Счет 75651667383060284188",
-    },
-    {
-        "id": 873106923,
-        "state": "EXECUTED",
-        "date": "2019-03-23T01:09:46.296404",
-        "operationAmount": {"amount": "43318.34", "currency": {"name": "руб.", "code": "RUB"}},
-        "description": "Перевод со счета на счет",
-        "from": "Счет 44812258784861134719",
-        "to": "Счет 74489636417521191160",
-    },
-    {
-        "id": 895315941,
-        "state": "EXECUTED",
-        "date": "2018-08-19T04:27:37.904916",
-        "operationAmount": {"amount": "56883.54", "currency": {"name": "USD", "code": "USD"}},
-        "description": "Перевод с карты на карту",
-        "from": "Visa Classic 6831982476737658",
-        "to": "Visa Platinum 8990922113665229",
-    },
-    {
-        "id": 594226727,
-        "state": "CANCELED",
-        "date": "2018-09-12T21:27:25.241689",
-        "operationAmount": {"amount": "67314.70", "currency": {"name": "руб.", "code": "RUB"}},
-        "description": "Перевод организации",
-        "from": "Visa Platinum 1246377376343588",
-        "to": "Счет 14211924144426031657",
-    },
-]
+def main():
+    """Основная функция"""
+
+    print("""Привет!
+Добро пожаловать в программу работы с баковскими транзакциями.
+Выбери необходимый пункт меню:
+1. Получить информацию о транзакциях из JSON-файла
+2. Получить информацию о транзакциях из CSV-файла
+3. Получить информацию о транзакциях из XLSX-файла
+""")
+
+    user_input = input("Введите цифру пункта меню: ")
+    if user_input == "1":
+        print("Для обработки выбран JSON-файл.")
+        flag = True
+        data = operations(json_file)
+        filtered_data = None
+
+        print("""Введите статус, по которому необходимо выполнить фильтрацию.
+Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING""")
+
+        while True:
+            user_choice = input("Введите EXECUTED, CANCELED или PENDING: ").lower().strip()
+            if "executed" in user_choice:
+                state = "EXECUTED"
+                print('Операции отфильтрованы по статусу "EXECUTED"')
+                break
+            elif "canceled" in user_choice:
+                state = "CANCELED"
+                print('Операции отфильтрованы по статусу "CANCELED"')
+                break
+            elif "pending" in user_choice:
+                state = "PENDING"
+                print('Операции отфильтрованы по статусу "PENDING"')
+                break
+            else:
+                print(f"Статус операции {user_choice} недоступен")
+
+        filtered_data = filter_by_state(data, state)
+
+        print("Отсортировать по возрастанию или по убыванию?")
+        user_choice_sort_by_ascending = input("Введите по возрастанию или по убыванию: ").lower().strip()
+        if user_choice_sort_by_ascending == "по убыванию":
+            flag = False
+
+        print("Отсортировать операции по дате? Да/Нет")
+        user_choice_sort_by_date = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_date == "да":
+            filtered_data = sort_by_date(filtered_data, flag)
+
+        print("Выводить только рублевые транзакции? Да/Нет")
+        user_choice_sort_by_currency = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_currency == "да":
+            filtered_data = list(filter_by_currency(filtered_data))
+
+        print("Отфильтровать список транзакций по определенному слову в описании? Да/Нет")
+        user_choice_sort_by_description = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_description == "да":
+            user_input_word = input("Введите ключевое слово: ").lower().strip()
+            filtered_data = transaction_descriptions_by_keyword(filtered_data, user_input_word)
+
+        print("Распечатываю итоговый список транзакций...\n")
+        print(f"Всего банковских операций в выборке: {len(filtered_data)}\n")
+        result = ""
+        for elem in filtered_data:
+            date = get_date(elem.get("date"))
+            descr = elem.get("description")
+            account_from = mask_account_card(elem.get("from"))
+            account_to = mask_account_card(elem.get("to"))
+            amount = elem.get("operationAmount").get("amount")
+            currency = elem.get("operationAmount").get("currency").get("code")
+            result += f"{date} {descr}\n{account_from}->{account_to}\nСумма: {amount} {currency}\n\n"
+        return result
+
+    elif user_input == "2":
+        print("Для обработки выбран CSV-файл.")
+        flag = True
+        filtered_data = None
+
+        print("""Введите статус, по которому необходимо выполнить фильтрацию.
+Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING""")
+
+        while True:
+            user_choice = input("Введите EXECUTED, CANCELED или PENDING: ").lower().strip()
+
+            if "executed" in user_choice:
+                state = "EXECUTED"
+                print('Операции отфильтрованы по статусу "EXECUTED"')
+                break
+
+            elif "canceled" in user_choice:
+                state = "CANCELED"
+                print('Операции отфильтрованы по статусу "CANCELED"')
+                break
+
+            elif "pending" in user_choice:
+                state = "PENDING"
+                print('Операции отфильтрованы по статусу "PENDING"')
+                break
+
+            else:
+                print(f"Статус операции {user_choice} недоступен")
+
+        filtered_data = read_csv_file(csv_file, state)
+
+        print("Отсортировать по возрастанию или по убыванию?")
+        user_choice_sort_by_ascending = input("Введите по возрастанию или по убыванию: ").lower().strip()
+
+        if user_choice_sort_by_ascending == "по убыванию":
+            flag = False
+
+        print("Отсортировать операции по дате? Да/Нет")
+        user_choice_sort_by_date = input("Введите да или нет: ").lower().strip()
+
+        if user_choice_sort_by_date == "да":
+            filtered_data = sort_by_date(filtered_data, flag)
+
+        print("Выводить только рублевые транзакции? Да/Нет")
+        user_choice_sort_by_currency = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_currency == "да":
+            filtered_data = list(filter_by_currency(filtered_data))
+
+        print("Отфильтровать список транзакций по определенному слову в описании? Да/Нет")
+        user_choice_sort_by_description = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_description == "да":
+            user_input_word = input("Введите ключевое слово: ").lower().strip()
+            filtered_data = transaction_descriptions_by_keyword(filtered_data, user_input_word)
+
+        print("Распечатываю итоговый список транзакций...\n")
+        print(f"Всего банковских операций в выборке: {len(filtered_data)}\n")
+
+        result = ""
+
+        for elem in filtered_data:
+            date = get_date(elem.get("date"))
+            descr = elem.get("description")
+
+            account_from = mask_account_card(elem.get("from")) if elem.get("from") else ""
+            account_to = mask_account_card(elem.get("to")) if elem.get("to") else ""
+
+            amount = elem.get("amount")
+            currency = elem.get("currency_name")
+
+            result += f"{date} {descr}\n" f"{account_from}->{account_to}\n" f"Сумма: {amount} {currency}\n\n"
+
+        return result
+
+    elif user_input == "3":
+        print("Для обработки выбран XLSX-файл.")
+        flag = True
+        filtered_data = None
+
+        print("""Введите статус, по которому необходимо выполнить фильтрацию.
+Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING""")
+
+        while True:
+            user_choice = input("Введите EXECUTED, CANCELED или PENDING: ").lower().strip()
+
+            if "executed" in user_choice:
+                state = "EXECUTED"
+                print('Операции отфильтрованы по статусу "EXECUTED"')
+                break
+
+            elif "canceled" in user_choice:
+                state = "CANCELED"
+                print('Операции отфильтрованы по статусу "CANCELED"')
+                break
+
+            elif "pending" in user_choice:
+                state = "PENDING"
+                print('Операции отфильтрованы по статусу "PENDING"')
+                break
+
+            else:
+                print(f"Статус операции {user_choice} недоступен")
+
+        filtered_data = read_excel_file(xlsx_file, state)
+
+        print("Отсортировать по возрастанию или по убыванию?")
+        user_choice_sort_by_ascending = input("Введите по возрастанию или по убыванию: ").lower().strip()
+
+        if user_choice_sort_by_ascending == "по убыванию":
+            flag = False
+
+        print("Отсортировать операции по дате? Да/Нет")
+        user_choice_sort_by_date = input("Введите да или нет: ").lower().strip()
+
+        if user_choice_sort_by_date == "да":
+            filtered_data = sort_by_date(filtered_data, flag)
+
+        print("Выводить только рублевые транзакции? Да/Нет")
+        user_choice_sort_by_currency = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_currency == "да":
+            filtered_data = list(filter_by_currency(filtered_data))
+
+        print("Отфильтровать список транзакций по определенному слову в описании? Да/Нет")
+        user_choice_sort_by_description = input("Введите да или нет: ").lower().strip()
+        if user_choice_sort_by_description == "да":
+            user_input_word = input("Введите ключевое слово: ").lower().strip()
+            filtered_data = transaction_descriptions_by_keyword(filtered_data, user_input_word)
+
+        print("Распечатываю итоговый список транзакций...\n")
+        print(f"Всего банковских операций в выборке: {len(filtered_data)}\n")
+
+        result = ""
+
+        for elem in filtered_data:
+            date = get_date(elem.get("date"))
+            descr = elem.get("description")
+
+            account_from = mask_account_card(elem.get("from")) if elem.get("from") else ""
+            account_to = mask_account_card(elem.get("to")) if elem.get("to") else ""
+
+            amount = elem.get("amount")
+            currency = elem.get("currency_name")
+
+            result += f"{date} {descr}\n" f"{account_from}->{account_to}\n" f"Сумма: {amount} {currency}\n\n"
+
+        return result
 
 
-user_input = input("Введите информацию о счёте или карте: ")
-print(mask_account_card(user_input))
-
-print(get_date("2024-03-11T02:26:18.671407"))
-
-currency_value = "USD"
-result_cur = filter_by_currency(transactions, currency_value)
-for element in result_cur:
-    print(element)
-
-result_des = transaction_descriptions(transactions)
-for elem in result_des:
-    print(elem)
-
-for card_number in card_number_generator(1, 5):
-    print(card_number)
-
-print(filter_by_state(data))
-print(sort_by_date(data))
+if __name__ == "__main__":
+    print(main())
