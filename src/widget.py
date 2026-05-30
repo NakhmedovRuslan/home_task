@@ -3,8 +3,10 @@ from src.masks import get_mask_account, get_mask_card_number
 
 def mask_account_card(information: str) -> str:
     """Функция маскирующая номер карты или счёта"""
-    if not information:
-        return "Пустая строка"
+
+    if not information or str(information) == "nan":
+        return ""
+
     splited_information = information.split()
     card_or_account_info = " ".join(splited_information[:-1])
     number = splited_information[-1]
